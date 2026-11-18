@@ -51,7 +51,10 @@
           "name": "Google Sheets account"
         }
       },
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -83,7 +86,10 @@
         }
       },
       "alwaysOutputData": true,
-      "executeOnce": true
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {

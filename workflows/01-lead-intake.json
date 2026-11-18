@@ -524,7 +524,8 @@
           "convertFieldsToString": false
         },
         "options": {
-          "cellFormat": "RAW"
+          "cellFormat": "RAW",
+          "useAppend": true
         }
       },
       "id": "52ac0c9f-5140-473d-a900-504284eb4184",
@@ -540,7 +541,10 @@
           "id": "REPLACE_GSHEETS_CRED_ID",
           "name": "Google Sheets account"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -729,7 +733,8 @@
           "convertFieldsToString": false
         },
         "options": {
-          "cellFormat": "RAW"
+          "cellFormat": "RAW",
+          "useAppend": true
         }
       },
       "id": "4c5e5928-df4d-4884-a78b-a9b650aab111",
@@ -745,7 +750,10 @@
           "id": "REPLACE_GSHEETS_CRED_ID",
           "name": "Google Sheets account"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000
     }
   ],
   "connections": {

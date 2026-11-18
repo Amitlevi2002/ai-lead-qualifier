@@ -110,7 +110,8 @@
           "convertFieldsToString": false
         },
         "options": {
-          "cellFormat": "RAW"
+          "cellFormat": "RAW",
+          "useAppend": true
         }
       },
       "id": "fb670253-2073-48b7-8442-adca4b741a5c",
@@ -127,7 +128,10 @@
           "name": "Google Sheets account"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {

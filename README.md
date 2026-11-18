@@ -268,6 +268,7 @@ To get a public HTTPS webhook URL for the landing page:
    | `N8N_PROXY_HOPS` | `1` |
    | `GENERIC_TIMEZONE` / `TZ` | `Asia/Jerusalem` |
    | `N8N_RUNNERS_ENABLED` | `true` |
+   | `N8N_CONCURRENCY_PRODUCTION_LIMIT` | `1` (prevents concurrent Sheets appends from overwriting each other) |
    | `N8N_BLOCK_ENV_ACCESS_IN_NODE` | `false` |
    | `RAILWAY_RUN_UID` | `0` (lets the container write to the mounted volume) |
    | `CLAUDE_MODEL`, `GOOGLE_SHEET_ID`, `TELEGRAM_CHAT_ID`, `SUMMARY_EMAIL_TO`, `SUMMARY_EMAIL_FROM` | same as `.env` |
@@ -304,6 +305,8 @@ For higher volume, add a Railway Postgres service and set `DB_TYPE=postgresdb` p
   - The Code-node sandbox has no `structuredClone`.
   - Workflows imported through the UI get new IDs, which breaks the error-workflow link (CLI import keeps them).
   - The internal task broker uses port **5679**, so running n8n itself on 5679 fails with no clear error.
+- **Concurrent writes to Google Sheets collide.** n8n's append works out "the next empty row" on its own side, so two leads that arrive in the same second wrote to the same row, and one lead silently vanished. I caught it during the live test, when 4 parallel leads produced only 3 rows. The fix is `N8N_CONCURRENCY_PRODUCTION_LIMIT=1`, which processes production runs one at a time. At this volume that costs nothing, and at real scale I'd switch to a database or a queue.
+- **Plan for API rate limits.** Every row write is several Sheets API calls, so a burst of 30 leads hit Google's per-minute quota (HTTP 429). The error workflow caught it, logged it and sent a Telegram alert, as designed. The Sheets nodes now retry with backoff (4 tries, 5 s apart).
 - **Spreadsheets "help" too much.** In `USER_ENTERED` mode, Google Sheets turns `050-000-0101` into a number or formula. Writing in `RAW` mode keeps the data as entered.
 - **RTL needs its own QA pass.** The usual `left: -9999px` trick for hiding the honeypot field made the Hebrew page about 10,000 px wide on mobile. A `clip-path` hide fixed it.
 - **Config vs. secrets.** API keys and tokens live in n8n's encrypted credential store. Non-secret settings (sheet ID, chat ID, model) are environment variables, so the same workflow JSON runs locally and on Railway without edits. The exports in git contain only placeholder credential IDs.
