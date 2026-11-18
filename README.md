@@ -4,6 +4,8 @@ An end-to-end lead-qualification pipeline built in **n8n**, using the **Claude A
 
 Hot and warm leads go to a Google Sheet and trigger a Telegram alert, so sales can call back while the lead is still interested. Junk goes to a separate sheet. At 18:00 each day, a per-source summary (Google / Facebook / website / portal) lands in Telegram and email, so you can see which ad channel brings real buyers.
 
+> **Live landing page:** https://ai-lead-qualifier-gilt.vercel.app (public demo: the form shows the success state without sending, since n8n runs locally).
+>
 > All data in this repo is fake. "Bonim Renovations" (בונים שיפוצים) is a fictional business.
 >
 > **Try it without an API key:** [demo mode](#demo-mode-no-api-key) swaps Claude for a local keyword-based stand-in, so the whole pipeline runs for free.
@@ -234,7 +236,7 @@ On Railway, add a second service from this repo with the start command `node scr
 
 ## Landing page
 
-`landing/` is a static, dependency-free Hebrew RTL form. The lead source comes from the ad link's query string: `?utm_source=facebook`, `?utm_source=google`, `?source=portal`. Anything else counts as `website`. A hidden honeypot field rejects simple bots.
+`landing/` is a static Hebrew RTL landing page with a lead form ([live demo](https://ai-lead-qualifier-gilt.vercel.app)). The lead source comes from the ad link's query string: `?utm_source=facebook`, `?utm_source=google`, `?source=portal`. Anything else counts as `website`. A hidden honeypot field rejects simple bots.
 
 1. Set the webhook URL in [`landing/config.js`](landing/config.js).
 2. Deploy:
