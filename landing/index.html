@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>בונים שיפוצים — הצעת מחיר לשיפוץ</title>
+  <meta name="description" content="דף נחיתה לדוגמה (עסק פיקטיבי) לפרויקט AI Lead Qualifier." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">שיפוצים במרכז הארץ · מאז 2009</p>
+      <h1>שיפוץ שמסתיים <span class="mark">בזמן</span>, בלי הפתעות.</h1>
+      <p class="lead">מטבחים, חדרי רחצה ושיפוץ דירה מלא. השאירו פרטים ונחזור אליכם עם הצעת מחיר תוך יום עסקים.</p>
+      <ul class="perks">
+        <li>מנהל פרויקט צמוד</li>
+        <li>הצעת מחיר מפורטת וקבועה</li>
+        <li>אחריות 5 שנים על העבודה</li>
+      </ul>
+    </section>
+
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">קבלו הצעת מחיר</h2>
+      <form id="lead-form" novalidate>
+        <div class="field">
+          <label for="name">שם מלא</label>
+          <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="phone">טלפון</label>
+            <input id="phone" name="phone" type="tel" dir="ltr" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="050-0000000" />
+          </div>
+          <div class="field">
+            <label for="email">אימייל</label>
+            <input id="email" name="email" type="email" dir="ltr" autocomplete="email" maxlength="150" placeholder="name@example.com" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">ספרו לנו על הפרויקט</label>
+          <textarea id="message" name="message" rows="4" required maxlength="2000" placeholder="לדוגמה: שיפוץ מטבח בדירת 4 חדרים, מתכננים להתחיל בחודש הבא"></textarea>
+        </div>
+
+        <!-- Honeypot: hidden from people, bots fill it in -->
+        <div class="hp" aria-hidden="true">
+          <label for="website">Website</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <p class="error" id="form-error" role="alert" hidden></p>
+        <button type="submit" id="submit">שלחו ונחזור אליכם</button>
+        <p class="fine">בלחיצה על "שלחו" אתם מאשרים שניצור איתכם קשר בנוגע לפנייה.</p>
+      </form>
+
+      <div class="success" id="success" hidden>
+        <div class="check" aria-hidden="true">✓</div>
+        <h3>תודה! הפנייה התקבלה</h3>
+        <p>נציג יחזור אליכם בהקדם.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    פרויקט הדגמה בלבד — "בונים שיפוצים" הוא עסק פיקטיבי. אל תזינו פרטים אמיתיים.
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

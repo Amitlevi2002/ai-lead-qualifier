@@ -1,0 +1,9 @@
+:80 {
+	# Everything except webhooks and the health check needs basic auth
+	@protected not path /webhook/* /webhook-test/* /healthz
+	basic_auth @protected {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+
+	reverse_proxy n8n:5678
+}

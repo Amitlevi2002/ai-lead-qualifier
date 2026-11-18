@@ -1,0 +1,21 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Local n8n data (if you bind-mount instead of using the named volume)
+n8n_data/
+.n8n/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Vercel
+.vercel/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

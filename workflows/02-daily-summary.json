@@ -1,0 +1,211 @@
+{
+  "id": "aiLeadSummary001",
+  "name": "AI Lead Qualifier — Daily Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cebfb0dd-cb29-424e-a1b1-8a0f335d374d",
+      "name": "Every day at 18:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "b90ff605-19f5-424f-8a1c-daf691ba4f19",
+      "name": "Read Leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        220,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_GSHEETS_CRED_ID",
+          "name": "Google Sheets account"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Rejected",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "73f86b6e-fb10-4303-a615-b3813d02cfbf",
+      "name": "Read Rejected",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        440,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_GSHEETS_CRED_ID",
+          "name": "Google Sheets account"
+        }
+      },
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build today's per-source summary from both sheets.\nconst TZ = 'Asia/Jerusalem';\nconst today = new Date().toLocaleDateString('en-CA', { timeZone: TZ });\nconst SOURCES = ['google', 'facebook', 'website', 'portal'];\n\nconst rows = (nodeName) =>\n  $(nodeName).all().map((i) => i.json).filter((r) => r && r.lead_id && String(r.received_date) === today);\n\nconst all = [...rows('Read Leads'), ...rows('Read Rejected')];\n\nconst pct = (n, d) => (d ? Math.round((n / d) * 100) : 0);\nconst stats = (list) => {\n  const count = list.length;\n  const hot = list.filter((r) => r.quality === 'hot').length;\n  const warm = list.filter((r) => r.quality === 'warm').length;\n  const irrelevant = list.filter((r) => r.quality === 'irrelevant').length;\n  return { count, hot, warm, irrelevant, pct_hot: pct(hot, count), pct_irrelevant: pct(irrelevant, count) };\n};\n\nconst extraSources = [...new Set(all.map((r) => r.source))].filter((s) => !SOURCES.includes(s));\nconst bySource = [...SOURCES, ...extraSources].map((source) => ({\n  source,\n  ...stats(all.filter((r) => r.source === source)),\n}));\nconst total = stats(all);\n\nconst lines = bySource\n  .filter((s) => s.count > 0)\n  .map((s) => '• ' + s.source + ': ' + s.count + ' leads · ' + s.pct_hot + '% hot · ' + s.pct_irrelevant + '% irrelevant');\n\nconst text = total.count\n  ? ['📊 Daily lead summary — ' + today, '', ...lines, '',\n     'Total: ' + total.count + ' · 🔥 ' + total.hot + ' hot · 🌤 ' + total.warm + ' warm · 🗑 ' + total.irrelevant + ' irrelevant'].join('\\n')\n  : '📊 Daily lead summary — ' + today + '\\n\\nNo new leads today.';\n\nconst td = (v) => '<td style=\"padding:6px 12px;border-bottom:1px solid #eee\">' + v + '</td>';\nconst th = (v) => '<th style=\"padding:6px 12px;text-align:left;border-bottom:2px solid #333\">' + v + '</th>';\nconst html =\n  '<h2 style=\"font-family:sans-serif\">Daily lead summary — ' + today + '</h2>' +\n  '<table style=\"font-family:sans-serif;border-collapse:collapse\">' +\n  '<tr>' + ['Source', 'Leads', 'Hot', 'Warm', 'Irrelevant', '% hot', '% irrelevant'].map(th).join('') + '</tr>' +\n  bySource.map((s) => '<tr>' + [s.source, s.count, s.hot, s.warm, s.irrelevant, s.pct_hot + '%', s.pct_irrelevant + '%'].map(td).join('') + '</tr>').join('') +\n  '<tr style=\"font-weight:bold\">' + ['Total', total.count, total.hot, total.warm, total.irrelevant, total.pct_hot + '%', total.pct_irrelevant + '%'].map(td).join('') + '</tr>' +\n  '</table>';\n\nreturn [{ json: { date: today, total, by_source: bySource, text, html } }];\n"
+      },
+      "id": "3d13861c-08db-4564-8cce-80ee7b298143",
+      "name": "Build Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "bb95bcc1-aec4-4fc7-b5db-6720a687a9c3",
+      "name": "Telegram: Daily Summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_TELEGRAM_CRED_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $env.SUMMARY_EMAIL_FROM }}",
+        "toEmail": "={{ $env.SUMMARY_EMAIL_TO }}",
+        "subject": "=Lead summary {{ $json.date }} — {{ $json.total.count }} leads, {{ $json.total.pct_hot }}% hot",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "0d3592f2-6325-4628-90a0-6042158a327e",
+      "name": "Email: Daily Summary",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE_SMTP_CRED_ID",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every day at 18:00": {
+      "main": [
+        [
+          {
+            "node": "Read Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Leads": {
+      "main": [
+        [
+          {
+            "node": "Read Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Rejected": {
+      "main": [
+        [
+          {
+            "node": "Build Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Summary": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Daily Summary",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email: Daily Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem",
+    "errorWorkflow": "aiLeadErrors0001"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

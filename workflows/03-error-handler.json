@@ -1,0 +1,195 @@
+{
+  "id": "aiLeadErrors0001",
+  "name": "AI Lead Qualifier — Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9874c44d-c779-467a-ad9f-cd5567a1216d",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalise the Error Trigger payload (execution errors and trigger errors look different).\nconst e = $json;\nconst exec = e.execution ?? {};\nconst err = exec.error ?? e.trigger?.error ?? {};\nreturn {\n  json: {\n    timestamp: new Date().toISOString(),\n    workflow: e.workflow?.name ?? 'unknown',\n    workflow_id: e.workflow?.id ?? '',\n    node: exec.lastNodeExecuted ?? err.node?.name ?? '',\n    error: String(err.message ?? 'Unknown error').slice(0, 500),\n    execution_id: exec.id ?? '',\n    execution_url: exec.url ?? '',\n    mode: exec.mode ?? e.trigger?.mode ?? '',\n  },\n};\n"
+      },
+      "id": "f35526a2-23e8-48b9-b613-d0cd2d982aca",
+      "name": "Format Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $env.GOOGLE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Errors",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "workflow": "={{ $json.workflow }}",
+            "node": "={{ $json.node }}",
+            "error": "={{ $json.error }}",
+            "execution_id": "={{ $json.execution_id }}",
+            "execution_url": "={{ $json.execution_url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            },
+            {
+              "id": "node",
+              "displayName": "node",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            },
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            },
+            {
+              "id": "execution_url",
+              "displayName": "execution_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "fb670253-2073-48b7-8442-adca4b741a5c",
+      "name": "Log to Errors sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        440,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_GSHEETS_CRED_ID",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🚨 Workflow failed: {{ $json.workflow }}\nNode: {{ $json.node || '-' }}\nError: {{ $json.error }}\nExecution: {{ $json.execution_url || $json.execution_id || '-' }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "8f19eed4-75bc-45e7-9e3b-c43ec17d6a82",
+      "name": "Telegram: Failure Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_TELEGRAM_CRED_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Error": {
+      "main": [
+        [
+          {
+            "node": "Log to Errors sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram: Failure Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Jerusalem"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

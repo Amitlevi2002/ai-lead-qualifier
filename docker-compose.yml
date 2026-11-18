@@ -1,0 +1,78 @@
+# AI Lead Qualifier — local n8n stack
+#
+#   cp .env.example .env   # then fill it in
+#   docker compose up -d
+#   open http://localhost:5678
+#
+# Caddy sits in front of n8n and adds HTTP basic auth to the editor.
+# Webhook paths are left open so the landing page and seed script can POST leads.
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:${N8N_VERSION:-2.8.4}
+    restart: unless-stopped
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?Set N8N_ENCRYPTION_KEY in .env}
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - GENERIC_TIMEZONE=${TIMEZONE:-Asia/Jerusalem}
+      - TZ=${TIMEZONE:-Asia/Jerusalem}
+      - N8N_PROXY_HOPS=1
+      - N8N_SECURE_COOKIE=false            # local http only; Railway runs on https
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_PERSONALIZATION_ENABLED=false
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      # Workflows read non-secret config through $env.* expressions
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-sonnet-5-5}
+      - CLAUDE_API_URL=${CLAUDE_API_URL:-}  # empty = real Claude API; demo = http://mock-claude:8787/v1/messages
+      - GOOGLE_SHEET_ID=${GOOGLE_SHEET_ID}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - SUMMARY_EMAIL_TO=${SUMMARY_EMAIL_TO}
+      - SUMMARY_EMAIL_FROM=${SUMMARY_EMAIL_FROM}
+    volumes:
+      - n8n_data:/home/node/.n8n          # credentials, workflows, execution history
+      - ./workflows:/workflows:ro          # lets you run `n8n import:workflow` inside the container
+    expose:
+      - "5678"                             # reachable only through Caddy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "5678:80"
+    environment:
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER:?Set BASIC_AUTH_USER in .env}
+      - BASIC_AUTH_HASH=${BASIC_AUTH_HASH:?Set BASIC_AUTH_HASH in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      n8n:
+        condition: service_started
+
+  # Demo mode only: `docker compose --profile demo up -d`
+  # Keyword-based stand-in for the Claude API, so the pipeline runs without an API key.
+  mock-claude:
+    image: node:22-alpine
+    profiles: ["demo"]
+    restart: unless-stopped
+    command: ["node", "/app/mock-claude.js"]
+    environment:
+      - MOCK_BAD_JSON_RATE=${MOCK_BAD_JSON_RATE:-0}
+    volumes:
+      - ./scripts/mock-claude.js:/app/mock-claude.js:ro
+    expose:
+      - "8787"
+
+volumes:
+  n8n_data:
+  caddy_data:
