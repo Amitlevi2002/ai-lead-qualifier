@@ -3,73 +3,196 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>בונים שיפוצים — הצעת מחיר לשיפוץ</title>
+  <title>בונים שיפוצים · שיפוץ שמסתיים בזמן</title>
   <meta name="description" content="דף נחיתה לדוגמה (עסק פיקטיבי) לפרויקט AI Lead Qualifier." />
   <meta name="robots" content="noindex" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <p class="eyebrow">שיפוצים במרכז הארץ · מאז 2009</p>
-      <h1>שיפוץ שמסתיים <span class="mark">בזמן</span>, בלי הפתעות.</h1>
-      <p class="lead">מטבחים, חדרי רחצה ושיפוץ דירה מלא. השאירו פרטים ונחזור אליכם עם הצעת מחיר תוך יום עסקים.</p>
-      <ul class="perks">
-        <li>מנהל פרויקט צמוד</li>
-        <li>הצעת מחיר מפורטת וקבועה</li>
-        <li>אחריות 5 שנים על העבודה</li>
+  <header class="nav" data-nav>
+    <a class="brand" href="#top" aria-label="בונים שיפוצים, לראש העמוד">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      בונים שיפוצים
+    </a>
+    <nav class="nav-links" aria-label="ניווט ראשי">
+      <a href="#before-after">לפני ואחרי</a>
+      <a href="#projects">פרויקטים</a>
+      <a href="#process">איך זה עובד</a>
+    </nav>
+    <a class="btn btn-small" href="#lead" data-magnetic>בקשו הצעת מחיר</a>
+  </header>
+
+  <main id="top">
+    <!-- ── Hero ─────────────────────────────────────── -->
+    <section class="hero" data-parallax-section>
+      <div class="hero-media" aria-hidden="true">
+        <img data-parallax-image data-parallax-speed="0.12"
+             src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=2000&q=80&auto=format&fit=crop"
+             alt="" fetchpriority="high" />
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <h1 class="hero-title" data-hero-title>
+          <span class="line-mask"><span class="line">שיפוץ שמסתיים בזמן.</span></span>
+          <span class="line-mask"><span class="line">בלי הפתעות בחשבון.</span></span>
+        </h1>
+        <p class="hero-sub" data-hero-fade>מטבחים, חדרי רחצה ושיפוץ דירה מלא במרכז הארץ. מנהל פרויקט צמוד מהמדידה הראשונה ועד מסירת המפתח.</p>
+        <div class="hero-actions" data-hero-fade>
+          <a class="btn" href="#lead" data-magnetic>בקשו הצעת מחיר</a>
+          <a class="btn btn-ghost" href="#projects">ראו פרויקטים</a>
+        </div>
+      </div>
+
+      <ul class="hero-promises" data-hero-fade>
+        <li><strong>הצעת מחיר קבועה</strong><span>בלי תוספות באמצע העבודה</span></li>
+        <li><strong>לוח זמנים בחוזה</strong><span>תאריך מסירה מחייב</span></li>
+        <li><strong>אחריות 5 שנים</strong><span>על כל עבודה שביצענו</span></li>
       </ul>
     </section>
 
-    <section class="card" aria-labelledby="form-title">
-      <h2 id="form-title">קבלו הצעת מחיר</h2>
-      <form id="lead-form" novalidate>
-        <div class="field">
-          <label for="name">שם מלא</label>
-          <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
+    <!-- ── Before / after ───────────────────────────── -->
+    <section class="ba" id="before-after">
+      <div class="section-head" data-reveal>
+        <h2>מהשלד ועד המפתח</h2>
+        <p>גררו את הידית כדי לראות את ההבדל. ככה נראית דירה ביום הראשון, וככה ביום המסירה.</p>
+      </div>
+
+      <div class="ba-frame" data-ba data-image-reveal>
+        <img class="ba-after" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1800&q=80&auto=format&fit=crop" alt="סלון משופץ ומרוהט, אחרי השיפוץ" />
+        <div class="ba-before-wrap" data-ba-before>
+          <img class="ba-before" src="https://images.unsplash.com/photo-1634586648651-f1fb9ec10d90?w=1800&q=80&auto=format&fit=crop" alt="חדר באמצע שיפוץ עם תמיכות מתכת וכלי עבודה, לפני" />
         </div>
-        <div class="row">
+        <span class="ba-tag ba-tag-before" aria-hidden="true">לפני</span>
+        <span class="ba-tag ba-tag-after" aria-hidden="true">אחרי</span>
+        <div class="ba-handle" data-ba-handle aria-hidden="true"><span></span></div>
+        <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="השוואת לפני ואחרי" data-ba-range />
+      </div>
+    </section>
+
+    <!-- ── Projects (pinned horizontal gallery) ────── -->
+    <section class="projects" id="projects" data-gallery>
+      <div class="projects-head" data-reveal>
+        <h2>פרויקטים אחרונים</h2>
+        <p>כל פרויקט מתחיל בביקור בבית ונגמר במפתח ביד, בתאריך שסיכמנו.</p>
+      </div>
+      <div class="projects-viewport">
+        <ol class="projects-track" data-gallery-track>
+          <li class="project">
+            <figure><img loading="lazy" src="https://images.unsplash.com/photo-1628745277862-bc0b2d68c50c?w=1200&q=80&auto=format&fit=crop" alt="מטבח לבן עם משטח עץ" /></figure>
+            <h3>מטבח, גבעתיים</h3><p>פירוק ובנייה מחדש · 6 שבועות</p>
+          </li>
+          <li class="project">
+            <figure><img loading="lazy" src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&q=80&auto=format&fit=crop" alt="חדר רחצה מודרני עם מקלחון" /></figure>
+            <h3>חדר רחצה, רמת גן</h3><p>מקלחון זכוכית וריצוף חדש · 3 שבועות</p>
+          </li>
+          <li class="project">
+            <figure><img loading="lazy" src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=80&auto=format&fit=crop" alt="פינת אוכל עם שולחן עץ עגול" /></figure>
+            <h3>דירת 4 חדרים, הרצליה</h3><p>שיפוץ מלא · 4 חודשים</p>
+          </li>
+          <li class="project">
+            <figure><img loading="lazy" src="https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=1200&q=80&auto=format&fit=crop" alt="חדר רחצה עם אמבטיה" /></figure>
+            <h3>חדר רחצה הורים, פתח תקווה</h3><p>אמבטיה עומדת וחיפוי · 4 שבועות</p>
+          </li>
+          <li class="project">
+            <figure><img loading="lazy" src="https://images.unsplash.com/photo-1722605090433-41d1183a792d?w=1200&q=80&auto=format&fit=crop" alt="מטבח עם ארונות לבנים ושיש" /></figure>
+            <h3>מטבח ופינת אוכל, חולון</h3><p>אי שיש וארונות עד התקרה · 7 שבועות</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── Process ──────────────────────────────────── -->
+    <section class="process" id="process">
+      <div class="section-head" data-reveal>
+        <h2>איך זה עובד</h2>
+        <p>שלושה שלבים, ומנהל פרויקט אחד שעונה לטלפון לאורך כל הדרך.</p>
+      </div>
+      <ol class="steps" data-reveal-group>
+        <li data-reveal-item>
+          <span class="step-num" aria-hidden="true">1</span>
+          <h3>משאירים פרטים</h3>
+          <p>כמה מילים על מה שתרצו לשפץ ועל המועד שמתאים לכם.</p>
+        </li>
+        <li data-reveal-item>
+          <span class="step-num" aria-hidden="true">2</span>
+          <h3>ביקור ומדידות</h3>
+          <p>מנהל פרויקט מתקשר תוך יום עסקים ומגיע אליכם הביתה.</p>
+        </li>
+        <li data-reveal-item>
+          <span class="step-num" aria-hidden="true">3</span>
+          <h3>הצעה קבועה וחוזה</h3>
+          <p>מחיר לפי סעיפים, תאריך מסירה מחייב, ואחריות 5 שנים.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ── Lead form ────────────────────────────────── -->
+    <section class="lead" id="lead" data-parallax-section>
+      <figure class="lead-media" data-image-reveal>
+        <img data-parallax-image data-parallax-speed="0.08" loading="lazy"
+             src="https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?w=1400&q=80&auto=format&fit=crop"
+             alt="איש מקצוע על סולם באמצע עבודת שיפוץ" />
+      </figure>
+
+      <div class="card" data-reveal>
+        <h2 id="form-title">בקשו הצעת מחיר</h2>
+        <p class="card-sub">נחזור אליכם תוך יום עסקים לתיאום ביקור.</p>
+        <form id="lead-form" novalidate aria-labelledby="form-title">
           <div class="field">
-            <label for="phone">טלפון</label>
-            <input id="phone" name="phone" type="tel" dir="ltr" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="050-0000000" />
+            <label for="name">שם מלא</label>
+            <input id="name" name="name" type="text" autocomplete="name" required maxlength="100" />
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="phone">טלפון</label>
+              <input id="phone" name="phone" type="tel" dir="ltr" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="050-0000000" />
+            </div>
+            <div class="field">
+              <label for="email">אימייל</label>
+              <input id="email" name="email" type="email" dir="ltr" autocomplete="email" maxlength="150" placeholder="name@example.com" />
+            </div>
           </div>
           <div class="field">
-            <label for="email">אימייל</label>
-            <input id="email" name="email" type="email" dir="ltr" autocomplete="email" maxlength="150" placeholder="name@example.com" />
+            <label for="message">מה תרצו לשפץ?</label>
+            <textarea id="message" name="message" rows="3" required maxlength="2000" placeholder="לדוגמה: מטבח בדירת 4 חדרים, מתכננים להתחיל בחודש הבא"></textarea>
           </div>
-        </div>
-        <div class="field">
-          <label for="message">ספרו לנו על הפרויקט</label>
-          <textarea id="message" name="message" rows="4" required maxlength="2000" placeholder="לדוגמה: שיפוץ מטבח בדירת 4 חדרים, מתכננים להתחיל בחודש הבא"></textarea>
-        </div>
 
-        <!-- Honeypot: hidden from people, bots fill it in -->
-        <div class="hp" aria-hidden="true">
-          <label for="website">Website</label>
-          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          <!-- Honeypot: hidden from people, bots fill it in -->
+          <div class="hp" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <p class="error" id="form-error" role="alert" hidden></p>
+          <button type="submit" id="submit" class="btn btn-block">שלחו בקשה</button>
+          <p class="fine">טלפון או אימייל מספיקים. נשתמש בפרטים רק כדי לחזור אליכם.</p>
+        </form>
+
+        <div class="success" id="success" hidden tabindex="-1">
+          <span class="success-mark" aria-hidden="true"></span>
+          <h3>הבקשה נשלחה</h3>
+          <p>מנהל פרויקט יחזור אליכם עד סוף יום העסקים הבא.</p>
+          <p class="demo-note" id="demo-note" hidden>גרסת הדגמה: בגרסה הזו הפנייה לא נשלחת. במערכת המלאה היא עוברת ל-n8n, מסווגת על ידי AI ומגיעה לטלגרם ול-Google Sheets.</p>
         </div>
-
-        <p class="error" id="form-error" role="alert" hidden></p>
-        <button type="submit" id="submit">שלחו ונחזור אליכם</button>
-        <p class="fine">בלחיצה על "שלחו" אתם מאשרים שניצור איתכם קשר בנוגע לפנייה.</p>
-      </form>
-
-      <div class="success" id="success" hidden>
-        <div class="check" aria-hidden="true">✓</div>
-        <h3>תודה! הפנייה התקבלה</h3>
-        <p>נציג יחזור אליכם בהקדם.</p>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    פרויקט הדגמה בלבד — "בונים שיפוצים" הוא עסק פיקטיבי. אל תזינו פרטים אמיתיים.
+    <span class="brand brand-foot"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>בונים שיפוצים</span>
+    <p>פרויקט הדגמה בלבד. "בונים שיפוצים" הוא עסק פיקטיבי, אל תזינו פרטים אמיתיים. צילומים: Unsplash.</p>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="config.js"></script>
+  <script src="motion.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

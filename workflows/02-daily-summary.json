@@ -149,7 +149,11 @@
           "id": "REPLACE_SMTP_CRED_ID",
           "name": "SMTP account"
         }
-      }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "Optional, disabled by default. To get the summary by email: connect an SMTP credential, then enable this node (select it and press D).",
+      "notesInFlow": true,
+      "disabled": true
     }
   ],
   "connections": {

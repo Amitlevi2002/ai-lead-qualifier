@@ -166,7 +166,7 @@ The exported files contain placeholder credential IDs only, never real keys. In 
 | **Header Auth** | Claude HTTP nodes | Name: `x-api-key` · Value: your Anthropic API key (any value in demo mode) |
 | **Telegram API** | All Telegram nodes | Bot token |
 | **Google Sheets OAuth2 API** | All Sheets nodes | OAuth sign-in |
-| **SMTP** | Daily summary email | Host, port, user, password |
+| **SMTP** (optional) | Daily summary email | Host, port, user, password. The email node ships **disabled**; after connecting SMTP, select it and press `D` to enable it |
 
 Then open each node that shows a credential warning and select the credential you created.
 

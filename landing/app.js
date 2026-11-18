@@ -61,7 +61,22 @@
     if (problem) return;
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'שולח…';
+    submitBtn.textContent = 'שולחים…';
+
+    // Public demo (e.g. on Vercel) while n8n runs on the author's machine: a localhost
+    // webhook is unreachable from a visitor's browser, so show the flow without sending.
+    var webhookIsLocal = /\/\/(localhost|127\.0\.0\.1)[:/]/.test(window.LEAD_WEBHOOK_URL || '');
+    var pageIsLocal = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+    if (webhookIsLocal && !pageIsLocal) {
+      setTimeout(function () {
+        form.hidden = true;
+        success.hidden = false;
+        var note = document.getElementById('demo-note');
+        if (note) note.hidden = false;
+        success.focus();
+      }, 700);
+      return;
+    }
 
     fetch(window.LEAD_WEBHOOK_URL, {
       method: 'POST',
@@ -72,13 +87,14 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         form.hidden = true;
         success.hidden = false;
+        success.focus();
       })
       .catch(function () {
-        showError('משהו השתבש בשליחה. נסו שוב בעוד רגע.');
+        showError('הבקשה לא נשלחה. בדקו את החיבור לאינטרנט ונסו שוב.');
       })
       .finally(function () {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'שלחו ונחזור אליכם';
+        submitBtn.textContent = 'שלחו בקשה';
       });
   });
 })();
